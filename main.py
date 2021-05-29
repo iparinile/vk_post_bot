@@ -2,15 +2,20 @@ import sqlite3
 import telebot
 import threading
 
+from DataBase.commands import add_user
+
 bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
-db = sqlite3.connect('data.sqlite', check_same_thread=False)
+db = sqlite3.connect('DataBase/data.sqlite', check_same_thread=False)
 cursor = db.cursor()
 
 
 @bot.message_handler(commands=["start"])
 def start(message):
-    bot.send_message(message.chat.id, 'Привет! Как тебя зовут?')
-    print(message.chat.id)
+    try:
+        add_user(message.chat.id, cursor, db)
+    except ValueError:
+        print('Что-то пошло не так')
+    bot.send_message(message.chat.id, 'Привет! Я записал тебя в свой список. Теперь я буду твоим рабом')
 
 
 def async_function():
