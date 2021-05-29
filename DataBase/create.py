@@ -12,7 +12,7 @@ def create_tables():
                    'id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,\n'
                    'group_domain VARCHAR(30),\n'
                    'post_id VARCHAR(30),\n'
-                   'post_text VARCHAR(30),\n'
+                   'post_text VARCHAR(300),\n'
                    'post_date INTEGER)')
 
     db.commit()

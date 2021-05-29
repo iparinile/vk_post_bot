@@ -18,12 +18,12 @@ def start(message):
     bot.send_message(message.chat.id, 'Привет! Я записал тебя в свой список. Теперь я буду твоим рабом')
 
 
-def async_function():
-    threading.Timer(5.0, async_function).start()  # Перезапуск через 5 секунд
+def search_new_posts():
+    threading.Timer(5.0, search_new_posts).start()  # Перезапуск через 5 секунд
     print("Hello, world!")
-    bot.send_message(813672369, 'Я пишу это каждые 5 секунд')
+    bot.send_message(813672369, 'Я ищу новые посты')
 
 
-async_function()
+search_new_posts()
 
 bot.polling()
