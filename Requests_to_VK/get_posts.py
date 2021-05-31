@@ -1,4 +1,5 @@
 import requests
+from pprint import pprint
 
 domains = ['bu_truba_zovet', 'translom_pererabotka', 'prodam_trubu', 'transfer1tube', 'tryba_by_vosstanovlenay',
            'public116166768', 'club17083336', 'metalopt', 'nelikvid', 'onamazov2014', 'id324213859', 'neewtruba']
@@ -28,10 +29,14 @@ def get_post(domain_of_group, data_of_last_post, count_of_posts):
             except KeyError:
                 pass
                 # print(e)
-            new_posts.append({'post_id': post['id'], 'date': post['date'], 'text': post['text'], 'image_irl': image_url})
+            new_posts.append({
+                'post_id': post['id'],
+                'date': post['date'],
+                'text': post['text'],
+                'image_irl': image_url
+            })
     return new_posts
 
 
 if __name__ == '__main__':
-    print(get_post(domains[0], 1622448000, 50))
-
+    pprint(get_post(domains[0], 1622448000, 50))
