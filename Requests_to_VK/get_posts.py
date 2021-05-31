@@ -25,7 +25,7 @@ def get_post(domain_of_group, data_of_last_post, count_of_posts):
                 for image in post['attachments']:
                     if image['type']:
                         image_url.append(image['photo']['sizes'][-1]['url'])
-            except Exception as e:
+            except KeyError:
                 pass
                 # print(e)
             new_posts.append({'post_id': post['id'], 'date': post['date'], 'text': post['text'], 'image_irl': image_url})
