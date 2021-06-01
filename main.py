@@ -27,7 +27,7 @@ def search_new_posts():
 
     for domain in domains:
         last_post_date = get_last_post_date(domain, cursor)
-        posts = get_post(domain_of_group=domain, data_of_last_post=last_post_date, count_of_posts=10)
+        posts = get_post(owner_id_of_group=domain, data_of_last_post=last_post_date, count_of_posts=10)
         print(domain)
         for post in posts:
             add_post(
