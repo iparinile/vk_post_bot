@@ -9,8 +9,8 @@ bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
 db = sqlite3.connect('DataBase/data.sqlite', check_same_thread=False)
 cursor = db.cursor()
 
-domains = ['bu_truba_zovet', 'translom_pererabotka', 'prodam_trubu', 'transfer1tube', 'tryba_by_vosstanovlenay',
-           'public116166768', 'club17083336', 'metalopt', 'nelikvid', 'onamazov2014', 'id324213859', 'neewtruba']
+owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835', '-66234848', '-116166768', '-17083336',
+             '-80026197', '-40447148', '324213859', '530570695']
 
 
 @bot.message_handler(commands=["start"])
@@ -25,13 +25,13 @@ def start(message):
 def search_new_posts():
     threading.Timer(10.0, search_new_posts).start()  # Перезапуск через 10 секунд
 
-    for domain in domains:
-        last_post_date = get_last_post_date(domain, cursor)
-        posts = get_post(owner_id_of_group=domain, data_of_last_post=last_post_date, count_of_posts=10)
-        print(domain)
+    for owner in owners_id:
+        last_post_date = get_last_post_date(owner, cursor)
+        posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
+        print(owner)
         for post in posts:
             add_post(
-                group_domain=domain,
+                group_domain=owner,
                 post_id=post['post_id'],
                 post_text=post['text'],
                 post_date=post['date'],

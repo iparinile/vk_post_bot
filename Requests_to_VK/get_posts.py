@@ -1,5 +1,6 @@
 import requests
 from pprint import pprint
+
 from work_with_text.correction_text_of_post import correction_text_of_post
 
 domains = ['bu_truba_zovet', 'translom_pererabotka', 'truba24club', 'prodam_trubu', 'transfer1tube',
