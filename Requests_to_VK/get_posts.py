@@ -1,5 +1,5 @@
 import requests
-from pprint import pprint
+import telebot
 
 from work_with_text.correction_text_of_post import correction_text_of_post
 
@@ -33,7 +33,7 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
             pass
         offset += 1
     new_posts = []
-    post_text = ' '
+    post_text = ''
     for post in All_Posts:
         image_url = []
         if post['date'] > data_of_last_post:
@@ -58,9 +58,15 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
 
 
 if __name__ == '__main__':
-    counter = 1
-    for owner in owners_id:
-        print("-----", owner, "----- номер: ", counter)
-        pprint(get_post(owner, 1622522606, 10))   # 2021-06-01 07:43:26
-        counter += 1
-# pprint(get_post('165745216', 1622522606, 10))
+    bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
+    posts = get_post('-28483397', 1, 25)
+    for post in posts:
+        if post['text'] != '':
+            text = post['text']
+            if len(text) > 4096:
+                for x in range(0, len(text), 4096):
+                    bot.send_message(813672369, text[x:x + 4096])
+            else:
+                bot.send_message(813672369, text)
+
+
