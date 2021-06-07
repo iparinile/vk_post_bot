@@ -42,14 +42,14 @@ def search_new_posts():
             if (post['text'] is not None) or (post['text'] != ''):  # Исправить этот кусок!!!!
                 images_array = post['image_irl']
                 if len(images_array) == 1:
-                    bot.send_photo(813672369, photo=images_array[0], caption=post['text'])
+                    bot.send_photo(chat_id=813672369, photo=images_array[0], caption=post['text'])
                 elif len(images_array) > 1:
                     media = [InputMediaPhoto(images_array[0], caption=post['text'])]
                     for image in images_array[1:]:
                         media.append(InputMediaPhoto(image))
-                    bot.send_media_group(813672369, media=media)
+                    bot.send_media_group(chat_id=813672369, media=media)
                 elif len(images_array) == 0:
-                    bot.send_message(813672369, post['text'])
+                    bot.send_message(chat_id=813672369, text=post['text'])
 
 
 search_new_posts()

@@ -12,7 +12,7 @@ def get_last_post_date(group_domain: str, cursor) -> int:
         return data
 
 
-def add_post(group_domain, post_id, post_text, post_date, cursor, db):
+def add_post(group_domain: str, post_id: str, post_text: str, post_date: int, cursor, db):
     params = (group_domain, post_id, post_text, post_date)
     cursor.execute(
         "INSERT INTO Posts (group_domain,post_id,post_text,post_date) VALUES (?, ?, ?, ?)", params)

@@ -7,7 +7,7 @@ owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835',
              '-80026197', '-40447148', '324213859', '530570695']
 
 
-def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int):
+def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int) -> list:
     token = '1c7c90141c7c90141c7c9014d11c0b69d811c7c1c7c90147cd753b4ab6c4777f6d7df33',
     api_version = '5.131'
     All_Posts = []
