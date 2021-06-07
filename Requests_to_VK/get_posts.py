@@ -1,6 +1,5 @@
 import requests
 from pprint import pprint
-
 from work_with_text.correction_text_of_post import correction_text_of_post
 
 domains = ['bu_truba_zovet', 'translom_pererabotka', 'truba24club', 'prodam_trubu', 'transfer1tube',
@@ -16,7 +15,6 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
     api_version = '5.131'
     All_Posts = []
     offset = 0
-    response = ''
     while offset < count_of_posts:
         try:
             response = requests.get('https://api.vk.com/method/wall.get',
@@ -33,7 +31,7 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
             pass
         offset += 1
     new_posts = []
-    post_text = ' '
+    post_text = None
     for post in All_Posts:
         image_url = []
         if post['date'] > data_of_last_post:
@@ -47,7 +45,7 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
                 post_text = correction_text_of_post(post['text'])
             except ValueError:
                 pass
-            if post_text != ' ' and image_url != []:
+            if post_text is not None and len(image_url) != 0:
                 new_posts.append({
                     'post_id': post['id'],
                     'date': post['date'],
@@ -63,4 +61,3 @@ if __name__ == '__main__':
         print("-----", owner, "----- номер: ", counter)
         pprint(get_post(owner, 1622522606, 10))   # 2021-06-01 07:43:26
         counter += 1
-# pprint(get_post('165745216', 1622522606, 10))

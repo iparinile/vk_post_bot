@@ -38,7 +38,6 @@ def search_new_posts():
                 cursor=cursor,
                 db=db
             )
-
             bot.send_message(813672369, post['text'])
 
 
