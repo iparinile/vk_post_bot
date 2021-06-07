@@ -54,4 +54,4 @@ def search_new_posts():
 
 search_new_posts()
 
-bot.polling()
+bot.polling(none_stop=True)

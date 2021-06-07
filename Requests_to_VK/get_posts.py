@@ -3,10 +3,6 @@ import telebot
 
 from work_with_text.correction_text_of_post import correction_text_of_post
 
-domains = ['bu_truba_zovet', 'translom_pererabotka', 'truba24club', 'prodam_trubu', 'transfer1tube',
-           'tryba_by_vosstanovlenay',
-           'neewtruba', 'metalopt', 'nelikvid', '-116166768', '-17083336', '324213859']
-
 owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835', '-66234848', '-116166768', '-17083336',
              '-80026197', '-40447148', '324213859', '530570695']
 
@@ -16,7 +12,6 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
     api_version = '5.131'
     All_Posts = []
     offset = 0
-    response = ''
     while offset < count_of_posts:
         try:
             response = requests.get('https://api.vk.com/method/wall.get',
@@ -68,5 +63,3 @@ if __name__ == '__main__':
                     bot.send_message(813672369, text[x:x + 4096])
             else:
                 bot.send_message(813672369, text)
-
-
