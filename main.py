@@ -1,5 +1,6 @@
 import sqlite3
 import telebot
+from telebot.types import InputMediaPhoto
 import threading
 
 from DataBase.commands import add_user, add_post, get_last_post_date
@@ -38,7 +39,17 @@ def search_new_posts():
                 cursor=cursor,
                 db=db
             )
-            bot.send_message(813672369, post['text'])
+            if (post['text'] is not None) or (post['text'] != ''):  # Исправить этот кусок!!!!
+                images_array = post['image_irl']
+                if len(images_array) == 1:
+                    bot.send_photo(813672369, photo=images_array[0], caption=post['text'])
+                elif len(images_array) > 1:
+                    media = [InputMediaPhoto(images_array[0], caption=post['text'])]
+                    for image in images_array[1:]:
+                        media.append(InputMediaPhoto(image))
+                    bot.send_media_group(813672369, media=media)
+                elif len(images_array) == 0:
+                    bot.send_message(813672369, post['text'])
 
 
 search_new_posts()
