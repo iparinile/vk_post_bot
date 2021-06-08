@@ -1,13 +1,13 @@
-import sqlite3
+import psycopg2
 import telebot
 from telebot.types import InputMediaPhoto
 import threading
 
-from DataBase.commands import add_user, add_post, get_last_post_date
+from DataBase.commands import add_user, add_post, get_last_post_date, is_user_already_recorded
 from Requests_to_VK.get_posts import get_post
 
 bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
-db = sqlite3.connect('DataBase/data.sqlite', check_same_thread=False)
+db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
 cursor = db.cursor()
 
 owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835', '-66234848', '-116166768', '-17083336',
@@ -17,14 +17,18 @@ owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835',
 @bot.message_handler(commands=["start"])
 def start(message):
     try:
-        add_user(message.chat.id, cursor, db)
-    except ValueError:
-        print('Что-то пошло не так')
-    bot.send_message(message.chat.id, 'Привет! Я записал тебя в свой список. Теперь я буду твоим рабом')
+        if is_user_already_recorded(message.chat.id, cursor):
+            bot.send_message(message.chat.id, 'Я уже запомнил тебя')
+        else:
+            add_user(message.chat.id, cursor, db)
+            bot.send_message(message.chat.id, 'Привет! Я записал тебя в свой список. Теперь я буду твоим рабом')
+    except psycopg2.Error:
+        print('прилетела ошибка')
+        cursor.execute('END TRANSACTION;')
 
 
 def search_new_posts():
-    threading.Timer(10.0, search_new_posts).start()  # Перезапуск через 10 секунд
+    threading.Timer(1 * 60.0, search_new_posts).start()  # Перезапуск через 10 секунд
 
     for owner in owners_id:
         last_post_date = get_last_post_date(owner, cursor)
@@ -34,7 +38,6 @@ def search_new_posts():
             add_post(
                 group_domain=owner,
                 post_id=post['post_id'],
-                post_text=post['text'],
                 post_date=post['date'],
                 cursor=cursor,
                 db=db
