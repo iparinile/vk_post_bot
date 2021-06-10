@@ -10,7 +10,7 @@ owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835',
 def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int) -> list:
     token = '1c7c90141c7c90141c7c9014d11c0b69d811c7c1c7c90147cd753b4ab6c4777f6d7df33',
     api_version = '5.131'
-    All_Posts = []
+    all_posts = []
     offset = 0
     while offset < count_of_posts:
         try:
@@ -23,12 +23,12 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
                                         'offset': offset
                                     }
                                     )
-            All_Posts.extend(response.json()['response']['items'])
+            all_posts.extend(response.json()['response']['items'])
         except ValueError:
             pass
         offset += 1
     new_posts = []
-    for post in All_Posts:
+    for post in all_posts:
         image_url = []
         post_text = []
         if post['date'] > data_of_last_post:
