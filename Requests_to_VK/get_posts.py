@@ -28,9 +28,9 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
             pass
         offset += 1
     new_posts = []
-    post_text = ' '
     for post in All_Posts:
         image_url = []
+        post_text = []
         if post['date'] > data_of_last_post:
             try:
                 for image in post['attachments']:
@@ -39,27 +39,45 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
             except KeyError:
                 pass
             try:
-                post_text = correction_text_of_post(post['text'])
+                post_text.append(correction_text_of_post(post['text']))
             except ValueError:
                 pass
-            if post_text != ' ' and image_url != []:
+            if post_text != [] and image_url != []:
                 new_posts.append({
                     'post_id': post['id'],
                     'date': post['date'],
                     'text': post_text,
-                    'image_irl': image_url
+                    'image_url': image_url
                 })
     return new_posts
 
 
+def edit_post_to_correct(post):
+    post_text = post['text'][0]
+    index = 0
+    if len(post['image_url']) > 0:  # если есть картинки
+        if len(post_text) > 1024:
+            post['text'].clear()
+            index = post_text[:1024].rfind(' ')
+            post['text'].append(post_text[:index])
+            post_text = post_text[index:]
+
+    while len(post_text) != 0:
+        if len(post_text) > 4096:
+            index = post_text[index:4096].rfind(' ')
+            post['text'].append(post_text[:index])
+            post_text = post_text[index:]
+        else:
+            post['text'].append(post_text)
+            post_text = ''
+    return post
+
+
 if __name__ == '__main__':
     bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
-    posts = get_post('-28483397', 1, 25)
+    posts = get_post('-28483397', 0, 50)
     for post in posts:
-        if post['text'] != '':
-            text = post['text']
-            if len(text) > 4096:
-                for x in range(0, len(text), 4096):
-                    bot.send_message(813672369, text[x:x + 4096])
-            else:
-                bot.send_message(813672369, text)
+        temp = edit_post_to_correct(post)
+        for text in temp['text']:
+            if text != '':
+                bot.send_message(898663801, text)

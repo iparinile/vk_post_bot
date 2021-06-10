@@ -43,7 +43,7 @@ def search_new_posts():
                 db=db
             )
             if (post['text'] is not None) or (post['text'] != ''):  # Исправить этот кусок!!!!
-                images_array = post['image_irl']
+                images_array = post['image_url']
                 if len(images_array) == 1:
                     bot.send_photo(chat_id=813672369, photo=images_array[0], caption=post['text'])
                 elif len(images_array) > 1:
