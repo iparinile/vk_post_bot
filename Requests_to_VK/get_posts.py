@@ -55,12 +55,14 @@ def get_post(owner_id_of_group: str, data_of_last_post: int, count_of_posts: int
 def edit_post_to_correct(post):
     post_text = post['text'][0]
     index = 0
-    if len(post['image_url']) > 0:  # если есть картинки
+    if len(post['image_url']) > 0:
         if len(post_text) > 1024:
             post['text'].clear()
             index = post_text[:1024].rfind(' ')
             post['text'].append(post_text[:index])
             post_text = post_text[index:]
+        else:
+            post_text = ''
 
     while len(post_text) != 0:
         if len(post_text) > 4096:
@@ -69,7 +71,7 @@ def edit_post_to_correct(post):
             post_text = post_text[index:]
         else:
             post['text'].append(post_text)
-            post_text = ''
+            break
     return post
 
 
