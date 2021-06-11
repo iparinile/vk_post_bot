@@ -34,13 +34,17 @@ def add_post(group_domain: str, post_id: str, post_date: int, cursor, db):
     db.commit()
 
 
-def get_users(cursor):
+def get_all_users(cursor):
     cursor.execute("SELECT DISTINCT user_id FROM Users")
     data = cursor.fetchall()
-    return data
+    users = []
+    if len(data) > 0:
+        for user in data:
+            users.append(user[0])
+    return users
 
 
 if __name__ == '__main__':
     db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
     cursor = db.cursor()
-    print(get_users(cursor))
+    print(get_all_users(cursor))

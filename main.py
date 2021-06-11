@@ -3,7 +3,7 @@ import telebot
 from telebot.types import InputMediaPhoto
 import threading
 
-from DataBase.commands import add_user, add_post, get_last_post_date, is_user_already_recorded
+from DataBase.commands import add_user, add_post, get_last_post_date, is_user_already_recorded, get_all_users
 from Requests_to_VK.get_posts import get_post, edit_post_to_correct
 
 bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
@@ -32,49 +32,52 @@ def search_new_posts():
 
     for owner in owners_id:
         last_post_date = get_last_post_date(owner, cursor)
-        posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
-        print(owner)
-        for post in posts:
-            add_post(
-                group_domain=owner,
-                post_id=post['post_id'],
-                post_date=post['date'],
-                cursor=cursor,
-                db=db
-            )
+        users = get_all_users(cursor)
+        if len(users) > 0:
+            posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
+            for post in posts:
+                add_post(
+                    group_domain=owner,
+                    post_id=post['post_id'],
+                    post_date=post['date'],
+                    cursor=cursor,
+                    db=db
+                )
 
-            post_text = edit_post_to_correct(post)['text']
-            images_array = post['image_url']
+                post_text = edit_post_to_correct(post)['text']
+                images_array = post['image_url']
 
-            if len(images_array) == 1:
-                if (post_text[0] == '') and (len(post_text) == 1):
-                    bot.send_photo(chat_id=813672369, photo=images_array[0])
-                else:
-                    bot.send_photo(chat_id=813672369, photo=images_array[0], caption=post_text[0])
-                    if len(post_text) > 1:
-                        for text in post_text[1:]:
+                for user_id in users:
+
+                    if len(images_array) == 1:
+                        if (post_text[0] == '') and (len(post_text) == 1):
+                            bot.send_photo(chat_id=user_id, photo=images_array[0])
+                        else:
+                            bot.send_photo(chat_id=user_id, photo=images_array[0], caption=post_text[0])
+                            if len(post_text) > 1:
+                                for text in post_text[1:]:
+                                    if text != '':
+                                        bot.send_message(chat_id=user_id, text=text)
+
+                    elif len(images_array) > 1:
+                        if (post_text[0] == '') and (len(post_text) == 1):
+                            media = []
+                            for image in images_array:
+                                media.append(InputMediaPhoto(image))
+                            bot.send_media_group(chat_id=user_id, media=media)
+                        else:
+                            media = [InputMediaPhoto(images_array[0], caption=post_text[0])]
+                            for image in images_array[1:]:
+                                media.append(InputMediaPhoto(image))
+                            bot.send_media_group(chat_id=user_id, media=media)
+                            if len(post_text) > 1:
+                                for text in post_text[1:]:
+                                    if text != '':
+                                        bot.send_message(chat_id=user_id, text=text)
+                    elif len(images_array) == 0:
+                        for text in post_text:
                             if text != '':
-                                bot.send_message(chat_id=813672369, text=text)
-
-            elif len(images_array) > 1:
-                if (post_text[0] == '') and (len(post_text) == 1):
-                    media = []
-                    for image in images_array:
-                        media.append(InputMediaPhoto(image))
-                    bot.send_media_group(chat_id=813672369, media=media)
-                else:
-                    media = [InputMediaPhoto(images_array[0], caption=post_text[0])]
-                    for image in images_array:
-                        media.append(InputMediaPhoto(image))
-                    bot.send_media_group(chat_id=813672369, media=media)
-                    if len(post_text) > 1:
-                        for text in post_text[1:]:
-                            if text != '':
-                                bot.send_message(chat_id=813672369, text=text)
-            elif len(images_array) == 0:
-                for text in post_text:
-                    if text != '':
-                        bot.send_message(chat_id=813672369, text=text)
+                                bot.send_message(chat_id=user_id, text=text)
 
 
 search_new_posts()
