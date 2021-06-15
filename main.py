@@ -10,8 +10,11 @@ bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
 db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
 cursor = db.cursor()
 
-owners_id = ['-115081032', '-203046727', '-28483397', '-89513171', '-152238835', '-66234848', '-116166768', '-17083336',
-             '-80026197', '-40447148', '324213859', '530570695', '-161503615', '-177235715']
+owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
+             '-89513171': 'prodam_trubu', '-152238835': 'transfer1tube', '-66234848': 'tryba_by_vosstanovlenay',
+             '-116166768': 'public116166768', '-17083336': 'club17083336', '-80026197': 'metalopt',
+             '-40447148': 'nelikvid', '324213859': 'id324213859', '530570695': 'neewtruba',
+             '-161503615': 'club161503615', '-177235715': 'truba.bu_ot159_1420'}
 
 
 @bot.message_handler(commands=["start"])
@@ -30,14 +33,14 @@ def start(message):
 def search_new_posts():
     threading.Timer(1 * 60.0, search_new_posts).start()  # Перезапуск через 10 секунд
 
-    for owner in owners_id:
-        last_post_date = get_last_post_date(owner, cursor)
+    for owner in owners_id.items():
+        last_post_date = get_last_post_date(owner[0], cursor)
         users = get_all_users(cursor)
         if len(users) > 0:
             posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
             for post in posts:
                 add_post(
-                    group_domain=owner,
+                    group_domain=owner[0],
                     post_id=post['post_id'],
                     post_date=post['date'],
                     cursor=cursor,
