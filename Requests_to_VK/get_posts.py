@@ -45,7 +45,7 @@ def get_post(owner_id_of_group, data_of_last_post: int, count_of_posts: int) -> 
                 post_text.append(correction_text_of_post(post['text']))
             except ValueError:
                 pass
-            if post_text != [] or image_url != []:
+            if (len(post_text) != 0) or (len(image_url) != 0):
                 new_posts.append({
                     'post_id': post['id'],
                     'date': post['date'],
@@ -61,9 +61,9 @@ def edit_post_to_correct(post):
     post_text = post['text'][0]
     index = 0
     if len(post['image_url']) > 0:
-        if len(post_text) > 1004:
+        if len(post_text) > 1024 - len(post['link']) - 1:
             post['text'].clear()
-            index = post_text[:1024].rfind(' ')
+            index = post_text[:1024 - len(post['link']) - 1].rfind(' ')
             post['text'].append(post_text[:index])
             post_text = post_text[index:]
         else:
@@ -79,8 +79,8 @@ def edit_post_to_correct(post):
     else:
         post['text'].clear()
         while len(post_text) != 0:
-            if len(post_text) > 4076:
-                index = post_text[index:4076].rfind(' ')
+            if len(post_text) > 4096 - len(post['link']) - 1:
+                index = post_text[index:4096 - len(post['link']) - 1].rfind(' ')
                 post['text'].append(post_text[:index])
                 post_text = post_text[index:]
             else:

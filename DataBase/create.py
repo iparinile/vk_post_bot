@@ -11,6 +11,7 @@ def create_tables():
     cursor.execute("CREATE TABLE Posts(\n"
                    'id SERIAL PRIMARY KEY,\n'
                    'group_domain VARCHAR(30),\n'
+                   'post_text VARCHAR(4100),\n'
                    'post_id VARCHAR(30),\n'
                    'post_date INTEGER)')
 
