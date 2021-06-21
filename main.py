@@ -37,8 +37,7 @@ def search_new_posts():
 
     for owner in owners_id.items():
 
-        print(owner[0])
-
+        print(owner[1])
         current_time = datetime.now().time()
         if (current_time.hour == 1) and (0 <= current_time.minute <= 3):  # Если время 01:00 - 01:05
             delete_unnecessary_posts(owner[0], cursor, db)
