@@ -1,0 +1,1 @@
+worker: python %vk-post-bot-ip%.py // main.py
