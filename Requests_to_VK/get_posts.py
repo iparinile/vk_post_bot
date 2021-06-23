@@ -38,7 +38,7 @@ def get_post(owner_id_of_group, data_of_last_post: int, count_of_posts: int) -> 
             try:
                 for image in post['attachments']:
                     if image['type']:
-                        image_url.append(image['photo']['sizes'][-1]['url'])
+                        image_url.append(image['photo']['sizes'][-2]['url'])
             except KeyError:
                 pass
             try:

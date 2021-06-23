@@ -3,6 +3,7 @@ import telebot
 from telebot.types import InputMediaPhoto
 import threading
 from datetime import datetime
+from time import sleep
 
 from DataBase.commands import add_user, add_post, get_last_post_date, is_user_already_recorded, get_all_users, \
     delete_unnecessary_posts, is_text_not_in_db
@@ -37,7 +38,6 @@ def search_new_posts():
 
     for owner in owners_id.items():
 
-        print(owner[1])
         current_time = datetime.now().time()
         if (current_time.hour == 1) and (0 <= current_time.minute <= 3):  # Если время 01:00 - 01:05
             delete_unnecessary_posts(owner[0], cursor, db)
@@ -57,6 +57,8 @@ def search_new_posts():
                     images_array = post['image_url']
 
                     for user_id in users:
+
+                        sleep(0.5)
 
                         if len(images_array) == 1:
                             if (post_text[0] == '') and (len(post_text) == 1):
@@ -96,7 +98,6 @@ def search_new_posts():
                                         bot.send_message(chat_id=user_id, text=text)
                             except ValueError:
                                 pass
-
                     add_post(
                         group_domain=owner[0],
                         post_text=post_text[0],
