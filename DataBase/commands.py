@@ -1,5 +1,11 @@
 import psycopg2
 
+owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
+             '-89513171': 'prodam_trubu', '-152238835': 'transfer1tube', '-66234848': 'tryba_by_vosstanovlenay',
+             '-116166768': 'public116166768', '-17083336': 'club17083336', '-80026197': 'metalopt',
+             '-40447148': 'nelikvid', '324213859': 'id324213859', '530570695': 'neewtruba',
+             '-161503615': 'club161503615', '-177235715': 'truba.bu_ot159_1420'}
+
 
 def add_user(user_id: int, cursor, db):
     cursor.execute(f"INSERT INTO Users (user_id) VALUES ({user_id})")
@@ -43,10 +49,9 @@ def get_all_users(cursor):
     return users
 
 
-def delete_unnecessary_posts(group_domain: str, cursor, db):
-    last_post_date = get_last_post_date(group_domain, cursor)
+def delete_unnecessary_posts(group_domain: str, last_post_date: int, cursor, db):
     if last_post_date != 0:
-        cursor.execute(f"DELETE FROM posts WHERE group_domain='{group_domain}' AND post_date!='{last_post_date}'")
+        cursor.execute(f"DELETE FROM posts WHERE group_domain='{group_domain}' AND post_date!={last_post_date}")
     db.commit()
 
 
@@ -64,4 +69,8 @@ def is_text_not_in_db(post_text: str, cursor):
 if __name__ == '__main__':
     db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
     cursor = db.cursor()
-    print(is_text_not_in_db('привето', cursor))
+    for owner in owners_id.items():
+        last_post_date = get_last_post_date(owner[0], cursor)
+
+        delete_unnecessary_posts(owner[0], last_post_date, cursor, db)
+

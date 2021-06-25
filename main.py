@@ -38,11 +38,12 @@ def search_new_posts():
 
     for owner in owners_id.items():
 
+        last_post_date = get_last_post_date(owner[0], cursor)
+
         current_time = datetime.now().time()
         if (current_time.hour == 1) and (0 <= current_time.minute <= 3):  # Если время 01:00 - 01:05
-            delete_unnecessary_posts(owner[0], cursor, db)
+            delete_unnecessary_posts(owner[0], last_post_date, cursor, db)
 
-        last_post_date = get_last_post_date(owner[0], cursor)
         users = get_all_users(cursor)
         if len(users) > 0:
             posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
