@@ -1,8 +1,12 @@
 import psycopg2
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 def create_tables():
-    db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
+    db = psycopg2.connect(os.getenv('DATABASE_URL'))
     cursor = db.cursor()
 
     cursor.execute('CREATE TABLE Users(\n'
