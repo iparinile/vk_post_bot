@@ -4,13 +4,17 @@ from telebot.types import InputMediaPhoto
 import threading
 from datetime import datetime
 from time import sleep
+import os
+from dotenv import load_dotenv
 
 from DataBase.commands import add_user, add_post, get_last_post_date, is_user_already_recorded, get_all_users, \
     delete_unnecessary_posts, is_text_not_in_db
 from Requests_to_VK.get_posts import get_post, edit_post_to_correct
 
-bot = telebot.TeleBot('1742929878:AAExqh7JcRATPAFr7iVc5pv9OE8B8eebDYQ')
-db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
+load_dotenv()
+
+bot = telebot.TeleBot(os.getenv('bot_token'))
+db = psycopg2.connect(dbname='data', user='postgres', password='1', host=os.getenv('DATABASE_URL'))
 cursor = db.cursor()
 
 owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
