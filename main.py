@@ -14,7 +14,7 @@ from Requests_to_VK.get_posts import get_post, edit_post_to_correct
 load_dotenv()
 
 bot = telebot.TeleBot(os.getenv('bot_token'))
-db = psycopg2.connect(dbname='data', user='postgres', password='1', host=os.getenv('DATABASE_URL'))
+db = psycopg2.connect(os.getenv('DATABASE_URL'))
 cursor = db.cursor()
 
 owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
