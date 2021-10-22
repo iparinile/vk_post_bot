@@ -19,7 +19,7 @@ cursor = db.cursor()
 
 owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
              '-89513171': 'prodam_trubu', '-152238835': 'transfer1tube', '-66234848': 'tryba_by_vosstanovlenay',
-             '-116166768': 'public116166768', '-17083336': 'club17083336', '-80026197': 'metalopt',
+             '-116166768': 'public116166768',
              '-40447148': 'nelikvid', '324213859': 'id324213859', '530570695': 'neewtruba',
              '-161503615': 'club161503615'}
 
