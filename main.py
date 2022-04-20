@@ -24,6 +24,7 @@ owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka
              '-161503615': 'club161503615'}
 
 
+
 def search_new_posts():
     threading.Timer(1 * 60.0, search_new_posts).start()  # Перезапуск через 1 минуту
 
