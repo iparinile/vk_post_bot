@@ -30,8 +30,12 @@ def search_new_posts():
     threading.Timer(1 * 60.0, search_new_posts).start()  # Перезапуск через 1 минуту
 
     for owner in owners_id.items():
-
-        last_post_date = get_last_post_date(owner[0], cursor)
+        
+        try:
+            last_post_date = get_last_post_date(owner[0], cursor)
+        except InFailedSqlTransaction:
+            cursor.execute("ROLLBACK")
+            db.commit()
 
         current_time = datetime.now().time()
         if (current_time.hour == 1) and (0 <= current_time.minute <= 3):  # Если время 01:00 - 01:05
