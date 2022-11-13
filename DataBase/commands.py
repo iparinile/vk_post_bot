@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.errors import SyntaxError
 
 owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
              '-89513171': 'prodam_trubu', '-152238835': 'transfer1tube', '-66234848': 'tryba_by_vosstanovlenay',
@@ -61,6 +62,8 @@ def is_text_not_in_db(post_text: str, cursor):
         data = cursor.fetchall()[0][0]
     except IndexError:
         return True
+    except SyntaxError:
+        return False
     if post_text == '':
         return True
     return False
