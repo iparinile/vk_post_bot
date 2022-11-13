@@ -1,5 +1,5 @@
 import psycopg2
-from psycopg2.errors import InFailedSqlTransaction 
+from psycopg2.errors import InFailedSqlTransaction, SyntaxError 
 import telebot
 from telebot.types import InputMediaPhoto
 import threading
@@ -46,61 +46,64 @@ def search_new_posts():
                     post_text = edit_post_to_correct(post)['text']
                     if len(post_text) == 0:
                         post_text = ['']
+                        
+                    try:
+                        if is_text_not_in_db(post_text[0], cursor):
 
-                    if is_text_not_in_db(post_text[0], cursor):
+                            images_array = post['image_url']
 
-                        images_array = post['image_url']
+                            for user_id in users:
 
-                        for user_id in users:
+                                sleep(0.5)
 
-                            sleep(0.5)
+                                if len(images_array) == 1:
+                                    if (post_text[0] == '') and (len(post_text) == 1):
+                                        bot.send_photo(chat_id=user_id, photo=images_array[0], caption=post['link'])
+                                    else:
+                                        bot.send_photo(chat_id=user_id, photo=images_array[0],
+                                                       caption=post['link'] + '\n' + post_text[0])
+                                        if len(post_text) > 1:
+                                            for text in post_text[1:]:
+                                                if text != '':
+                                                    bot.send_message(chat_id=user_id, text=text)
 
-                            if len(images_array) == 1:
-                                if (post_text[0] == '') and (len(post_text) == 1):
-                                    bot.send_photo(chat_id=user_id, photo=images_array[0], caption=post['link'])
-                                else:
-                                    bot.send_photo(chat_id=user_id, photo=images_array[0],
-                                                   caption=post['link'] + '\n' + post_text[0])
-                                    if len(post_text) > 1:
+                                elif len(images_array) > 1:
+                                    if (post_text[0] == '') and (len(post_text) == 1):
+                                        media = [InputMediaPhoto(images_array[0], caption=post['link'] + '\n')]
+                                        for image in images_array[1:]:
+                                            media.append(InputMediaPhoto(image))
+                                        bot.send_media_group(chat_id=user_id, media=media)
+                                    else:
+                                        media = [InputMediaPhoto(images_array[0], caption=post['link'] + '\n' + post_text[0])]
+                                        for image in images_array[1:]:
+                                            media.append(InputMediaPhoto(image))
+                                        bot.send_media_group(chat_id=user_id, media=media)
+                                        if len(post_text) > 1:
+                                            for text in post_text[1:]:
+                                                if text != '':
+                                                    bot.send_message(chat_id=user_id, text=text)
+                                elif len(images_array) == 0:
+                                    try:
+                                        if post_text[0] != '':
+                                            bot.send_message(chat_id=user_id, text=post['link'] + '\n' + post_text[0])
+                                    except IndexError:
+                                        pass
+                                    try:
                                         for text in post_text[1:]:
                                             if text != '':
                                                 bot.send_message(chat_id=user_id, text=text)
-
-                            elif len(images_array) > 1:
-                                if (post_text[0] == '') and (len(post_text) == 1):
-                                    media = [InputMediaPhoto(images_array[0], caption=post['link'] + '\n')]
-                                    for image in images_array[1:]:
-                                        media.append(InputMediaPhoto(image))
-                                    bot.send_media_group(chat_id=user_id, media=media)
-                                else:
-                                    media = [InputMediaPhoto(images_array[0], caption=post['link'] + '\n' + post_text[0])]
-                                    for image in images_array[1:]:
-                                        media.append(InputMediaPhoto(image))
-                                    bot.send_media_group(chat_id=user_id, media=media)
-                                    if len(post_text) > 1:
-                                        for text in post_text[1:]:
-                                            if text != '':
-                                                bot.send_message(chat_id=user_id, text=text)
-                            elif len(images_array) == 0:
-                                try:
-                                    if post_text[0] != '':
-                                        bot.send_message(chat_id=user_id, text=post['link'] + '\n' + post_text[0])
-                                except IndexError:
-                                    pass
-                                try:
-                                    for text in post_text[1:]:
-                                        if text != '':
-                                            bot.send_message(chat_id=user_id, text=text)
-                                except ValueError:
-                                    pass
-                        add_post(
-                            group_domain=owner[0],
-                            post_text=post_text[0],
-                            post_id=post['post_id'],
-                            post_date=post['date'],
-                            cursor=cursor,
-                            db=db
-                        )
+                                    except ValueError:
+                                        pass
+                            add_post(
+                                group_domain=owner[0],
+                                post_text=post_text[0],
+                                post_id=post['post_id'],
+                                post_date=post['date'],
+                                cursor=cursor,
+                                db=db
+                                )
+                    except SyntaxError:
+                        pass
         except InFailedSqlTransaction:
             cursor.execute("ROLLBACK")
             db.commit()
