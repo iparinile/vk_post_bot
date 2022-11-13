@@ -1,3 +1,5 @@
+from time import sleep
+
 import requests
 import telebot
 
@@ -16,6 +18,7 @@ def get_post(owner_id_of_group, data_of_last_post: int, count_of_posts: int) -> 
     all_posts = []
     offset = 0
     while offset < count_of_posts:
+        sleep(1)
         try:
             response = requests.get('https://api.vk.com/method/wall.get',
                                     params={

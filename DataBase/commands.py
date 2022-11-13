@@ -1,5 +1,9 @@
+from time import sleep
+
 import psycopg2
 from psycopg2.errors import SyntaxError
+
+from Requests_to_VK.get_posts import get_post
 
 owners_id = {'-115081032': 'bu_truba_zovet', '-203046727': 'translom_pererabotka', '-28483397': 'truba24club',
              '-89513171': 'prodam_trubu', '-152238835': 'transfer1tube', '-66234848': 'tryba_by_vosstanovlenay',
@@ -70,10 +74,10 @@ def is_text_not_in_db(post_text: str, cursor):
 
 
 if __name__ == '__main__':
-    db = psycopg2.connect(dbname='data', user='postgres', password='1', host='localhost')
-    cursor = db.cursor()
-    for owner in owners_id.items():
-        last_post_date = get_last_post_date(owner[0], cursor)
 
-        delete_unnecessary_posts(owner[0], last_post_date, cursor, db)
+    for owner in owners_id.items():
+        sleep(1)
+        last_post_date = 0
+
+        posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
 
