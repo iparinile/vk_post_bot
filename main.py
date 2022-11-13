@@ -1,4 +1,5 @@
 import psycopg2
+from psycopg2.errors import InFailedSqlTransaction 
 import telebot
 from telebot.types import InputMediaPhoto
 import threading
@@ -100,7 +101,11 @@ def search_new_posts():
                         db=db
                     )
 
-
-search_new_posts()
+try:
+    search_new_posts()
+except InFailedSqlTransaction:
+    cursor.execute("ROLLBACK")
+    db.commit()
+    
 
 bot.polling(none_stop=True)
