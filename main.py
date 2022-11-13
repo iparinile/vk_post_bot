@@ -103,7 +103,8 @@ def search_new_posts():
                                 db=db
                                 )
                     except SyntaxError:
-                        pass
+                        cursor.execute("ROLLBACK")
+                        db.commit()
         except InFailedSqlTransaction:
             cursor.execute("ROLLBACK")
             db.commit()
