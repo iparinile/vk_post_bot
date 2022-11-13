@@ -59,6 +59,7 @@ def get_post(owner_id_of_group, data_of_last_post: int, count_of_posts: int) -> 
 
 def edit_post_to_correct(post):
     post_text = post['text'][0]
+    post_text = post_text.replace("'", " ").replace("\"", " ")
     index = 0
     if len(post['image_url']) > 0:
         if len(post_text) > 1024 - len(post['link']) - 1:
