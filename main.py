@@ -44,6 +44,8 @@ def search_new_posts():
                 for post in posts:
 
                     post_text = edit_post_to_correct(post)['text']
+                    post_text = post_text.replace("'", " ").replace("\"", " ")
+                 
                     if len(post_text) == 0:
                         post_text = ['']
                         
