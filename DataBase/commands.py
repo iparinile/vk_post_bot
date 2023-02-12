@@ -73,11 +73,27 @@ def is_text_not_in_db(post_text: str, cursor):
     return False
 
 
+def is_advert_id_not_in_db(advert_id: str, cursor) -> bool:
+    cursor.execute(f"SELECT post_id FROM trubamet WHERE post_id='{advert_id}'")
+    data = cursor.fetchone()
+    if data is None:
+        return True
+    else:
+        return False
+
+
+def add_advert_id_to_db(advert_id: str, db, cursor) -> None:
+    cursor.execute(f"INSERT INTO trubamet (post_id, create_at) VALUES ('{advert_id}', CURRENT_TIMESTAMP)")
+    db.commit()
+
+
+def delete_old_adverts(db, cursor) -> None:
+    cursor.execute(f"DELETE FROM trubamet WHERE create_at<(CURRENT_TIMESTAMP - INTERVAL '30 DAY')")
+    db.commit()
+
+
 if __name__ == '__main__':
+    db = psycopg2.connect("postgresql://postgres:postgres@localhost:5432/vk_to_telegram")
+    cursor = db.cursor()
 
-    for owner in owners_id.items():
-        sleep(1)
-        last_post_date = 0
-
-        posts = get_post(owner_id_of_group=owner, data_of_last_post=last_post_date, count_of_posts=10)
-
+    delete_old_adverts(db, cursor)
