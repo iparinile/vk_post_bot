@@ -64,10 +64,10 @@ def search_new_posts():
 
                                 if len(images_array) == 1:
                                     if (post_text[0] == '') and (len(post_text) == 1):
-                                        bot.send_photo(chat_id=user_id, photo=images_array[0], caption=post['link'])
+                                        bot.send_photo(chat_id=user_id, photo=images_array[0])
                                     else:
                                         bot.send_photo(chat_id=user_id, photo=images_array[0],
-                                                       caption=post['link'] + '\n' + post_text[0])
+                                                       caption=post_text[0])
                                         if len(post_text) > 1:
                                             for text in post_text[1:]:
                                                 if text != '':
@@ -75,13 +75,13 @@ def search_new_posts():
 
                                 elif len(images_array) > 1:
                                     if (post_text[0] == '') and (len(post_text) == 1):
-                                        media = [InputMediaPhoto(images_array[0], caption=post['link'] + '\n')]
+                                        media = [InputMediaPhoto(images_array[0])]
                                         for image in images_array[1:]:
                                             media.append(InputMediaPhoto(image))
                                         bot.send_media_group(chat_id=user_id, media=media)
                                     else:
                                         media = [InputMediaPhoto(images_array[0],
-                                                                 caption=post['link'] + '\n' + post_text[0])]
+                                                                 caption=post_text[0])]
                                         for image in images_array[1:]:
                                             media.append(InputMediaPhoto(image))
                                         bot.send_media_group(chat_id=user_id, media=media)
@@ -92,7 +92,7 @@ def search_new_posts():
                                 elif len(images_array) == 0:
                                     try:
                                         if post_text[0] != '':
-                                            bot.send_message(chat_id=user_id, text=post['link'] + '\n' + post_text[0])
+                                            bot.send_message(chat_id=user_id, text=post_text[0])
                                     except IndexError:
                                         pass
                                     try:
