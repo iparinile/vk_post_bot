@@ -9,3 +9,4 @@ soupsieve==2.2.1
 urllib3==1.26.5
 
 python-dotenv~=0.18.0
+Pyrogram~=2.0.99
