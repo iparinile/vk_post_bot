@@ -25,7 +25,8 @@ def get_posts_from_trubamet(db, cursor) -> list:
                 text = text.replace("Адрес:", "\nАдрес:")
                 text = text.replace("Конт.лицо:", "\nКонт.лицо:")
                 text = text.replace("Тел.:", "\nТел.:")
-                text = text[:text.find("Сайт:")]
+                if "Сайт" in text:
+                    text = text[:text.find("Сайт:")]
 
                 if is_advert_id_not_in_db(advert_id, cursor):
                     add_advert_id_to_db(advert_id, db, cursor)
